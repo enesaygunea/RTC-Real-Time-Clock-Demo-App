@@ -8,7 +8,7 @@
 #include "irtc.h"
 #include "lcdm.h"
 
-// RTC setup timeout deðeri
+// RTC setup timeout deÃ°eri
 #define RTC_TMOUT       30000
 
 enum { IRTC_WORK, IRTC_SETUP };
@@ -19,20 +19,20 @@ void init(void)
   // System Clock init
   Sys_ClockInit();
   
-  // I/O portlarý baþlangýç
+  // I/O ports init
   Sys_IoInit();
   
-  // LED baþlangýç
+  // LED init
   IO_Write(IOP_LED, 1);
   IO_Init(IOP_LED, IO_MODE_OUTPUT);
   
-  // Konsol baþlangýç
+  // Console init
   Sys_ConsoleInit();
   
-  // Button Baþlangýç
+  // Button init
   BTN_InitButtons();
   
-  // RTC Baþlangýç
+  // RTC init
   IRTC_Init();
   IRTC_IntConfig();
 }
@@ -46,8 +46,8 @@ void Task_LED(void)
     S_LED_ON,
   } state = I_LED_OFF;
   
-  static clock_t t0;    // Duruma ilk geçiþ saati
-  clock_t t1;           // Güncel saat deðeri
+  static clock_t t0;    // Duruma ilk gecis saati
+  clock_t t1;           // GÃ¼ncel saat degeri
   
   t1 = clock();
   
@@ -87,7 +87,7 @@ void Task_Button(void)
   static unsigned count = 0;
   
   if (g_Buttons[BTN_SET]) {
-    // SET iþle
+    // SET iÃ¾le
     UART_printf("SET (%u)\n", ++count);
     
     // g_Buttons[BTN_SET] = 0; // binary semaphore
@@ -95,7 +95,7 @@ void Task_Button(void)
   }
   
   if (g_Buttons[BTN_UP]) {
-    // UP iþle
+    // UP iÃ¾le
     UART_printf("UP (%u)\n", ++count);
     
     // g_Buttons[BTN_UP] = 0;  // binary semaphore
@@ -103,7 +103,7 @@ void Task_Button(void)
   }
   
   if (g_Buttons[BTN_DN]) {
-    // DOWN iþle
+    // DOWN iÃ¾le
     UART_printf("DN (%u)\n", ++count);
     
     // g_Buttons[BTN_DN] = 0; // binary semaphore
@@ -114,21 +114,21 @@ void Task_Button(void)
   /////////////LONG PRES//////////////////
 #ifdef BTN_LONG_PRESS
   if (g_ButtonsL[BTN_SET]) {
-    // SET iþle
+    // SET iÃ¾le
     UART_printf("SET_LONG (%u)\n", ++count);
     
     g_ButtonsL[BTN_SET] = 0; 
   }
   
   if (g_ButtonsL[BTN_UP]) {
-    // UP iþle
+    // UP iÃ¾le
     UART_printf("UP_LONG (%u)\n", ++count);
     
     g_ButtonsL[BTN_UP] = 0; 
   }
   
   if (g_ButtonsL[BTN_DN]) {
-    // DOWN iþle
+    // DOWN iÃ¾le
     UART_printf("DN_LONG (%u)\n", ++count);
     
     g_ButtonsL[BTN_DN] = 0; 
@@ -204,7 +204,7 @@ void Task_RTC(void)
   static uint32_t tm0, tm1;
   static int hour, min;
   
-  t1 = clock(); // güncel saat deðeri (ms)
+  t1 = clock(); // gÃ¼ncel saat deÃ°eri (ms)
   
   if (g_RtcOW) {
     
@@ -344,7 +344,7 @@ void Task_RTC(void)
 
 int main()
 {
-  // Baþlangýç yapýlandýrmalarý
+  // Initialization
   init();
     
   
@@ -352,8 +352,8 @@ int main()
   //IRTC_SetTime(0xFFFFFFF0);
   SetAlarm(60);
   
-  // Görev çevrimi (Task Loop)
-  // Co-Operative Multitasking (Yardýmlaþmalý çoklu görev) 
+  // Task Loop
+  // Co-Operative Multitasking
   while (1)
   {
     Task_LED();
