@@ -59,7 +59,7 @@ void Sys_ClockInit(void)
 }
 
 ///////////////////////////////////////////////////
-// KONSOL FONKSÝYONLARI
+// Console Functions
 void Sys_ConsoleInit(void)
 {
   LCD_Init();
