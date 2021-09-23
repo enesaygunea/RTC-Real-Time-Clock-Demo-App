@@ -32,9 +32,9 @@ typedef struct {
 
 enum {
   // Blue pill LED
-  IOP_LED,      // Blue pill LED
+  IOP_LED,
   
-  // LCD modül
+  // LCD modÃ¼l
   IOP_LCD_RS,
   IOP_LCD_E,
   IOP_LCD_DB4,
@@ -42,7 +42,7 @@ enum {
   IOP_LCD_DB6,
   IOP_LCD_DB7,
 
-  // UART uçlarý
+  // UART PINS
   IOP_U1RX,
   IOP_U1TX,
   IOP_U2RX,
@@ -50,7 +50,7 @@ enum {
   IOP_U3RX,
   IOP_U3TX,
   
-  // Push Button
+  // Push Button PINS
   IOP_BTN_SET,
   IOP_BTN_UP,
   IOP_BTN_DN,
@@ -61,7 +61,7 @@ enum {
 IO_PIN _ios[] = {
   { IO_PORT_C, 13 },    
   
-  // LCD modül
+  // LCD modÃ¼l
   { IO_PORT_B, 9 },    
   { IO_PORT_B, 8 },    
   { IO_PORT_A, 7 },    
@@ -69,7 +69,7 @@ IO_PIN _ios[] = {
   { IO_PORT_A, 5 },    
   { IO_PORT_A, 4 },
 
-  // UART I/O uçlarý
+  // UART I/O PINS
   { IO_PORT_A, 10 },
   { IO_PORT_A, 9 },
   { IO_PORT_A, 3 },
@@ -77,7 +77,7 @@ IO_PIN _ios[] = {
   { IO_PORT_B, 11 },
   { IO_PORT_B, 10 },
   
-  // Push Buttons
+  // Push Buttons PINS
   { IO_PORT_A, 0 },
   { IO_PORT_A, 1 },
   { IO_PORT_A, 2 },
