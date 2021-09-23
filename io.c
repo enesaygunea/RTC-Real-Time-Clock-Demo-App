@@ -6,7 +6,7 @@
 #define _IOS_
 #include "io.h"
 
-// ST Periph Lib kullanarak I/O ucunu yapýlandýrýyoruz
+// Initialization using ST Peripheral Library
 void IO_Init(int idx, int mode)
 {
   GPIO_InitTypeDef ioInit;
