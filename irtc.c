@@ -4,7 +4,7 @@
 #include "system.h"
 #include "io.h"
 
-#define IRTC_FLAG       0xE3B8  // Rastgele bir sayý belirleyip sonra onu flag olarak set ediyoruz.
+#define IRTC_FLAG       0xE3B8  // Selected random value. NOT: just used as a flag.
 #define RTC_PS          32768
 
 volatile int g_Time = 0;
@@ -13,7 +13,7 @@ volatile int g_RtcOW = 0;
 volatile int g_RtcChanged = 0;
 
 // RTC Interrupt Handler
-// Farklý 3 interrupt kaynaktan ortaya çýkan kesmeleri iþleyecek.
+// Proccessing interrupt handler from 3 different interrupt resource.
 void RTC_IRQHandler(void)
 {
   // RTC second
@@ -36,8 +36,6 @@ void RTC_IRQHandler(void)
   
 }
 
-// Saniye sayacý olarak referans zamanýndan bu yana
-// geçen süreye geri döner
 uint32_t IRTC_GetTime(void)
 {
   return RTC_GetCounter();
@@ -45,78 +43,78 @@ uint32_t IRTC_GetTime(void)
 
 void IRTC_SetTime(uint32_t tmVal)
 {
-  // RTC' de süren iþlem varsa bekle
+  // RTC' de sÃ¼ren iÅŸlem varsa bekle
   RTC_WaitForLastTask();
   
   RTC_SetCounter(tmVal);
   
-  // RTC' de süren iþlem varsa bekle
+  // RTC' de sÃ¼ren iÅŸlem varsa bekle
   RTC_WaitForLastTask();
 }
 
 void IRTC_Init(void)
 {
-    // PWR ve BKP birimleri saat iþareti açýlýr.
+    // PWR ve BKP birimleri saat iÅŸareti aÃ§Ä±lÄ±r.
   RCC_APB1PeriphClockCmd(RCC_APB1Periph_PWR | RCC_APB1Periph_BKP, ENABLE); 
   
-  // Backup register'larýna eriþimi açýyoruz.
+  // Backup register'larÄ±na eriÅŸimi aÃ§Ä±yoruz.
   PWR_BackupAccessCmd(ENABLE);
   
   if (BKP_ReadBackupRegister(BKP_DR1) != IRTC_FLAG) {
-    // Backup domain resetlenmiþ ise buraya girer
+    // Backup domain resetlenmiÅŸ ise buraya girer
     BKP_DeInit();
     
-    // LSE(Low Speed External Osilatör)' ü çalýþtýrýyoruz.
+    // LSE(Low Speed External OsilatÃ¶r)' Ã¼ Ã§alÄ±ÅŸtÄ±rÄ±yoruz.
     RCC_LSEConfig(RCC_LSE_ON);
     
-    // LSE çalýþana kadar bekle
+    // LSE Ã§alÄ±ÅŸana kadar bekle
     while (RCC_GetFlagStatus(RCC_FLAG_LSERDY) == RESET);
     
-    // RTC clock kaynaðý = LSE olsun
+    // RTC clock kaynaÄŸÄ± = LSE olsun
     RCC_RTCCLKConfig(RCC_RTCCLKSource_LSE);
     
     // RTC clock active
     RCC_RTCCLKCmd(ENABLE);
     
-    // RTC register' larýna eriþim için senkronlama gerekli
+    // RTC register' larÄ±na eriÅŸim iÃ§in senkronlama gerekli
     RTC_WaitForSynchro();
     
-    // RTC' de süren iþlem varsa bekle
+    // RTC' de sÃ¼ren iÅŸlem varsa bekle
     RTC_WaitForLastTask();
     
-    // RTC prescale ayarý (LSE periyot register'ý)
+    // RTC prescale ayarÄ± (LSE periyot register'Ä±)
     RTC_SetPrescaler(RTC_PS - 1);
     
-    // iþlem tamamlandý
+    // iÅŸlem tamamlandÄ±
     BKP_WriteBackupRegister(BKP_DR1, IRTC_FLAG);
   }
   else {
-    // RTC register' larýna eriþim için senkronlama gerekli
+    // RTC register' larÄ±na eriÅŸim iÃ§in senkronlama gerekli
     RTC_WaitForSynchro();
   }
 }
 
 void IRTC_IntConfig(void)
 {
-  // *RTC second Kesme Kaynaðý
-    // RTC Periodic Interrupt - Sayacýn her bir artýþýnda kesme alabiliyoruz.
+  // *RTC second Kesme KaynaÄŸÄ±
+    // RTC Periodic Interrupt - SayacÄ±n her bir artÄ±ÅŸÄ±nda kesme alabiliyoruz.
     
-    // 2 ayrý bölgede ayar yapacaðýz.
-    // - Peripheral(çevresel)
+    // 2 ayrÄ± bÃ¶lgede ayar yapacaÄŸÄ±z.
+    // - Peripheral(Ã§evresel)
     // - Core(NVIC)
     
-  RTC_ClearITPendingBit(RTC_IT_SEC);  // 0) False interrupt önlemi
-  RTC_ITConfig(RTC_IT_SEC, ENABLE); // 1) Çevresel kesme izni
+  RTC_ClearITPendingBit(RTC_IT_SEC);  // 0) False interrupt Ã¶nlemi
+  RTC_ITConfig(RTC_IT_SEC, ENABLE); // 1) Ã‡evresel kesme izni
   
-  // *RTC Alarm Kesme Kaynaðý
-  RTC_ClearITPendingBit(RTC_IT_ALR);  // 0) False interrupt önlemi
-  RTC_ITConfig(RTC_IT_ALR, ENABLE); // 1) Çevresel kesme izni
+  // *RTC Alarm Kesme KaynaÄŸÄ±
+  RTC_ClearITPendingBit(RTC_IT_ALR);  // 0) False interrupt Ã¶nlemi
+  RTC_ITConfig(RTC_IT_ALR, ENABLE); // 1) Ã‡evresel kesme izni
   
-  // *RTC Overflow Kesme Kaynaðý
-  RTC_ClearITPendingBit(RTC_IT_OW);  // 0) False interrupt önlemi
-  RTC_ITConfig(RTC_IT_OW, ENABLE); // 1) Çevresel kesme izni
+  // *RTC Overflow Kesme KaynaÄŸÄ±
+  RTC_ClearITPendingBit(RTC_IT_OW);  // 0) False interrupt Ã¶nlemi
+  RTC_ITConfig(RTC_IT_OW, ENABLE); // 1) Ã‡evresel kesme izni
   
-  NVIC_SetPriority(RTC_IRQn, 3); // 2.1) RTC kesme önceliði = 3 yapmýþ olduk. Not: 0 en yüksek önceliktir.
+  NVIC_SetPriority(RTC_IRQn, 3); // 2.1) RTC kesme Ã¶nceliÄŸi = 3 yapmÄ±ÅŸ olduk. Not: 0 en yÃ¼ksek Ã¶nceliktir.
   NVIC_EnableIRQ(RTC_IRQn); // 2.2) RTC' nin second kesmesini aktif hale getirdik.
 }
 
