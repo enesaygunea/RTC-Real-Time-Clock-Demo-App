@@ -29,7 +29,7 @@ void Sys_IoInit(void)
 {
   int i;
   
-  // GPIOx Clock baþlangýç
+  // GPIOx Clock init
   for (i = 0; i < N_PORTS; ++i)
     RCC_APB2PeriphClockCmd(_GPIO_Clocks[i], ENABLE);
   
@@ -59,7 +59,7 @@ void Sys_ClockInit(void)
 }
 
 ///////////////////////////////////////////////////
-// KONSOL FONKSÝYONLARI
+// KONSOL FONKSÃYONLARI
 void Sys_ConsoleInit(void)
 {
   LCD_Init();
