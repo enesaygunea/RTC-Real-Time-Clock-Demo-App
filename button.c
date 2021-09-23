@@ -6,7 +6,7 @@
 
 int g_dbMax = 50;
 
-int _bScan = 0;         // Tarama baþlangýç flag deðeri
+int _bScan = 0;         
 
 static BTN_PIN _bts[] = {
   { IOP_BTN_SET, 1, 0, 0 }, 
@@ -19,17 +19,16 @@ static BTN_PIN _bts[] = {
 unsigned g_Buttons[N_BUTTONS]; // Button Semaphore (binary / counting )
 unsigned g_ButtonsL[N_BUTTONS]; // Button Long Press Semaphore (binary)
 
-// Her "button timer" tick ile çaðrýlýr.
-// Tek bir butonun tarama iþlemini yapar.
+//Each button invokes from "button timer" tick.
+// Each button doing one scaninig.
 static void BTN_Scan(int btIdx)
 {
-  int r; // Pin okuma deðeri
+  int r; // Pin read value
   
   r = IO_Read(_bts[btIdx].ioIdx);
   
   if (r != _bts[btIdx].cState) {
     if(++_bts[btIdx].dbc >= g_dbMax) {
-      // baþarý sayýsýna ulaþýldý. Dolayýsýyla durum deðiþtir.
       _bts[btIdx].cState = r;
       
       _bts[btIdx].dbc = 0;
@@ -47,8 +46,6 @@ static void BTN_Scan(int btIdx)
     }
   }
   else {
-    // max baþarý sayýsýna ulaþýlamadan hata geldi
-    // sayacý sýfýrlýyoruz
     _bts[btIdx].dbc = 0;
   }
 
