@@ -5,8 +5,8 @@
 #define BT_LP_TIME      3000
 
 typedef struct {
-  int   ioIdx;    // Butonun baðlý olduðu input pin index'i
-  int   cState; // Current State(buton 0' da mý 1' de mi ? )
+  int   ioIdx;    // Button physical connection pin
+  int   cState; // Current State
   int   aState; // active state
   int   dbc;    // debounce counter
 #ifdef BTN_LONG_PRESS
