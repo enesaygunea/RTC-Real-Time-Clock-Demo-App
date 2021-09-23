@@ -37,20 +37,20 @@ void UART_Init(int idx, int baud)
 {
 	USART_InitTypeDef uInit;
 
-	// 1) I/O uçlarý yapýlandýrýlýr
-	// TX ucu yapýlandýrmasý
+	// 1) I/O pins Initialization
+	// TX pin init
 	IO_Init(_uCfg[idx].ioTx, IO_MODE_ALTERNATE);
 
-	// Rx ucu yapýlandýrmasý
+	// Rx pin init
 	IO_Init(_uCfg[idx].ioRx, IO_MODE_INPUT);
 
-	// 2) UART çevresel birim için clock saðlýyoruz
+	// 2) UART clock enable.
 	if (idx == UART_1)
 		RCC_APB2PeriphClockCmd(_uCfg[idx].ckUART, ENABLE);
 	else
 		RCC_APB1PeriphClockCmd(_uCfg[idx].ckUART, ENABLE);
 
-	// 3) Init yapýsý baþlatýlýr
+	// 3) UART Init
 	uInit.USART_BaudRate = baud;
 	uInit.USART_HardwareFlowControl = USART_HardwareFlowControl_None;
 	uInit.USART_Mode = USART_Mode_Rx | USART_Mode_Tx;
@@ -60,26 +60,26 @@ void UART_Init(int idx, int baud)
 
 	USART_Init(_uCfg[idx].pUSART, &uInit);
 
-	// 4) Çevresel aktive edilir (çalýþtýrýlýr)
+	// 4) Periph Starts
 	USART_Cmd(_uCfg[idx].pUSART, ENABLE);
 }
 
 void UART_Send(int idx, unsigned char val)
 {
-	// 1) TSR yükleme için uygun mu? (boþ mu)
-	// TSR dolu olduðu müddetçe bekle
+	// 1) TSR is available ?
+	// Stay while TSR is full
 	while (!USART_GetFlagStatus(_uCfg[idx].pUSART, USART_FLAG_TXE)) ;
 
-	// 2) Yüklemeyi yap
+	// 2) Send Data
 	USART_SendData(_uCfg[idx].pUSART, val);
 }
 
 void UART_Send2(int idx, unsigned char val)
 {
-	// 1) Yüklemeyi yap
+	// 1) Send Data
 	USART_SendData(_uCfg[idx].pUSART, val);
 
-	// 2) Veri gidene dek bekle
+	// 2) Wait while data sent
 	while (!USART_GetFlagStatus(_uCfg[idx].pUSART, USART_FLAG_TC)) ;
 
 }
@@ -89,7 +89,6 @@ int UART_DataReady(int idx)
 	return USART_GetFlagStatus(_uCfg[idx].pUSART, USART_FLAG_RXNE);
 }
 
-// Bloke çalýþýr, hazýr veri yoksa bekler
 unsigned char UART_Recv(int idx)
 {
 	while (!UART_DataReady(idx)) ;
